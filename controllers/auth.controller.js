@@ -42,7 +42,7 @@ const signin = async (req, res) => {
 
       if (isValidUser) {
         const token = await jwt.sign({ _id: existingUser._id }, process.env.JWT_SECRET);
-        res.cookie("accessToken", token, { httpOnly: true, sameSite: "none", secure: true, expires: new Date() + 86400000 });
+        res.cookie("accessToken", token, { httpOnly: true, sameSite: "none", secure: true, expire: new Date() + 86400000 });
 
         delete existingUser.hashedPassword;
         return res.status(201).send({ message: "User signed-in successfully", user: existingUser });
@@ -53,6 +53,7 @@ const signin = async (req, res) => {
 
     res.status(400).send({ message: "User does not exist" });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "Internal Server Error", error: error });
   }
 };
