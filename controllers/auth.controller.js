@@ -42,7 +42,7 @@ const signin = async (req, res) => {
 
       if (isValidUser) {
         const token = await jwt.sign({ _id: existingUser._id }, process.env.JWT_SECRET);
-        res.cookie("accessToken", token, { httpOnly: true, sameSite: "none", secure: true, path: "/", expire: new Date() + 86400000 });
+        res.cookie("accessToken", token, { httpOnly: true, sameSite: "none", secure: true, expire: new Date() + 86400000 });
 
         delete existingUser.hashedPassword;
         return res.status(201).send({ message: "User signed-in successfully", user: existingUser });
@@ -60,7 +60,7 @@ const signin = async (req, res) => {
 
 const signout = async (req, res) => {
   try {
-    await res.clearCookie("accessToken");
+    await res.clearCookie("accessToken", {path: "/", domain: ".netlify.app"} );
     res.status(200).send({ message: "User signed-out successfully" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error", error: error });
