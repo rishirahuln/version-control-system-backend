@@ -13,5 +13,5 @@ exports.isAuth = (req, res, next) => {
 
     return next();
   }
-  res.status(401).send({ message: "Unauthorized" });
+  return res.status(401).send({ message: "Unauthorized" });
 };
