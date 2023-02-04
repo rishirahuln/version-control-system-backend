@@ -60,8 +60,8 @@ const signin = async (req, res) => {
 
 const signout = async (req, res) => {
   try {
-    await res.clearCookie("accessToken");
     await res.cookie("accessToken", { expire: new Date() });
+    await res.clearCookie("accessToken");
     res.status(200).send({ message: "User signed-out successfully" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error", error: error });
