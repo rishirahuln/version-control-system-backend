@@ -35,7 +35,7 @@ const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const existingUser = await Users.findOne({ email: email });
+    let existingUser = await Users.findOne({ email: email });
 
     if (existingUser) {
       const isValidUser = await bcrypt.compare(password, existingUser.hashedPassword);
@@ -44,6 +44,7 @@ const signin = async (req, res) => {
         const token = await jwt.sign({ _id: existingUser._id }, process.env.JWT_SECRET);
         res.cookie("accessToken", token, { httpOnly: true, sameSite: "none", secure: true, expire: new Date() + 86400000 });
 
+        existingUser = existingUser.toObject();
         delete existingUser.hashedPassword;
         return res.status(201).send({ message: "User signed-in successfully", user: existingUser });
       }
@@ -95,7 +96,7 @@ const forgotPassword = async (req, res) => {
 
     await tokenPayload.save();
 
-    const link = `http://localhost:3000/reset-password?token=${newToken}&id=${user._id}`;
+    const link = `${process.env.CLIENT_URL}/reset-password?token=${newToken}&id=${user._id}`;
 
     await sendEmail(user.email, "Version Control System Account Reset Password", {message: "Please click the link to verify your identity and set a new password for your account",link: link});
 
